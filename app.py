@@ -88,6 +88,63 @@ st.markdown("""
         border-color: #6366F1;
         background-color: #F5F3FF;
     }
+
+    /* Standardized step navigation buttons */
+    .step-nav-container {
+        display: flex;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 1rem 0;
+        background: #F9FAFB;
+        border-radius: 0.75rem;
+        margin-bottom: 1rem;
+    }
+    .step-nav-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 120px;
+        height: 70px;
+        padding: 0.75rem 1rem;
+        border: 2px solid #E5E7EB;
+        border-radius: 0.5rem;
+        background: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        text-decoration: none;
+    }
+    .step-nav-btn:hover {
+        border-color: #6366F1;
+        background: #F5F3FF;
+    }
+    .step-nav-btn.active {
+        border-color: #6366F1;
+        background: #EEF2FF;
+    }
+    .step-nav-btn.completed {
+        border-color: #10B981;
+        background: #ECFDF5;
+    }
+    .step-nav-icon {
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+    }
+    .step-nav-label {
+        font-size: 0.75rem;
+        font-weight: 500;
+        color: #374151;
+        text-align: center;
+        white-space: nowrap;
+    }
+    .step-nav-btn.active .step-nav-label {
+        color: #4338CA;
+        font-weight: 600;
+    }
+    .step-nav-btn.completed .step-nav-label {
+        color: #059669;
+    }
+
     .step-indicator {
         display: inline-block;
         padding: 0.5rem 1rem;
@@ -124,6 +181,12 @@ st.markdown("""
     .insight-purple {
         border-color: #8B5CF6;
         background-color: #F5F3FF;
+    }
+
+    /* Ensure consistent button sizing in columns */
+    div[data-testid="column"] > div > div > div > button {
+        min-height: 70px !important;
+        white-space: nowrap !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -172,29 +235,36 @@ def render_onboarding():
 
 
 def render_step_indicator():
-    """Render the step navigation indicator."""
+    """Render the step navigation indicator with consistent styling."""
     steps = [
-        ("Access Control", "🔐"),
-        ("Marketplace", "🌐"),
-        ("Search", "🔍"),
-        ("Curation", "⭐"),
-        ("Insights", "📊"),
-        ("Tools", "🔧"),
+        ("Access", "🔐", 1),
+        ("Marketplace", "🌐", 2),
+        ("Search", "🔍", 3),
+        ("Curation", "⭐", 4),
+        ("Insights", "📊", 5),
+        ("Tools", "🔧", 6),
     ]
 
-    cols = st.columns(len(steps))
+    # Create evenly-spaced columns with consistent sizing
+    cols = st.columns([1, 1, 1, 1, 1, 1])
 
-    for i, (name, icon) in enumerate(steps):
-        step_num = i + 1
+    for i, (name, icon, step_num) in enumerate(steps):
         with cols[i]:
+            # Determine button styling based on state
             if step_num == st.session_state.current_step:
-                status = "step-active"
-            elif step_num < st.session_state.current_step:
-                status = "step-completed"
+                button_type = "primary"
             else:
-                status = "step-pending"
+                button_type = "secondary"
 
-            if st.button(f"{icon} {name}", key=f"step_{step_num}", use_container_width=True):
+            # Create button with consistent label format
+            label = f"{icon}\n{name}"
+
+            if st.button(
+                label,
+                key=f"step_{step_num}",
+                use_container_width=True,
+                type=button_type if step_num == st.session_state.current_step else "secondary"
+            ):
                 st.session_state.current_step = step_num
                 st.rerun()
 
