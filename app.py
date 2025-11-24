@@ -23,8 +23,10 @@ from src.data.mock_data import (
     API_STATUS,
     RESEARCH_TOOLS,
     SEARCH_SUGGESTIONS,
+    DEMO_SCENARIOS,
     get_persona_research_questions,
     get_persona_methodology,
+    get_all_agent_scores,
 )
 
 # Page configuration
@@ -555,13 +557,8 @@ def render_insights():
     # Reproducibility Scorecard - Main Feature
     st.markdown("### Reproducibility Scorecard")
 
-    # Agent scores for visualization
-    agent_scores = {
-        "Analysis": 85,
-        "Integrity": 92,
-        "Testing": 78,
-        "Collaboration": 88,
-    }
+    # Agent scores for visualization - all 6 agents
+    agent_scores = get_all_agent_scores(persona_id, st.session_state.selected_datasets)
 
     # Calculate overall score
     overall_score = sum(agent_scores.values()) / len(agent_scores)
@@ -642,48 +639,88 @@ def render_insights():
 
     st.divider()
 
-    # Detailed Agent Analysis
+    # Detailed Agent Analysis - All 6 Agents
     st.markdown("### Detailed Agent Analysis")
 
-    # All four agents in a grid
-    agent_cols = st.columns(2)
+    # Helper function for status
+    def get_status(score):
+        if score >= 80:
+            return "Pass"
+        elif score >= 60:
+            return "Warning"
+        else:
+            return "Needs Work"
 
-    with agent_cols[0]:
-        st.markdown("#### 🔬 Analysis Agent")
-        st.progress(85)
-        st.markdown("""
-        **Score: 85/100** • Status: Pass
-        - Statistical power: Adequate
-        - Sample size: Sufficient for medium effects
-        - Multiple comparison correction: Recommended
+    # First row: Analysis, Integrity, Testing
+    row1 = st.columns(3)
+
+    with row1[0]:
+        score = agent_scores["Analysis"]
+        st.markdown("#### 🔬 Analysis")
+        st.progress(score / 100)
+        st.markdown(f"""
+        **Score: {score}/100** • {get_status(score)}
+        - Statistical power
+        - Sample size
+        - Multiple comparisons
         """)
 
-        st.markdown("#### 🧪 Testing Agent")
-        st.progress(78)
-        st.markdown("""
-        **Score: 78/100** • Status: Warning
-        - Experimental design: Good
-        - Environment documentation: Needs improvement
-        - Code reproducibility: Partially verified
+    with row1[1]:
+        score = agent_scores["Integrity"]
+        st.markdown("#### 🛡️ Integrity")
+        st.progress(score / 100)
+        st.markdown(f"""
+        **Score: {score}/100** • {get_status(score)}
+        - Data provenance
+        - FAIR compliance
+        - Ethics
         """)
 
-    with agent_cols[1]:
-        st.markdown("#### 🛡️ Integrity Agent")
-        st.progress(92)
-        st.markdown("""
-        **Score: 92/100** • Status: Pass
-        - Data provenance: Verified
-        - FAIR compliance: 85%
-        - Ethics documentation: Complete
+    with row1[2]:
+        score = agent_scores["Testing"]
+        st.markdown("#### 🧪 Testing")
+        st.progress(score / 100)
+        st.markdown(f"""
+        **Score: {score}/100** • {get_status(score)}
+        - Experimental design
+        - Environment docs
+        - Reproducibility
         """)
 
-        st.markdown("#### 🤝 Collaboration Agent")
-        st.progress(88)
-        st.markdown("""
-        **Score: 88/100** • Status: Pass
-        - Team coordination: Good
-        - Authorship agreement: Present
-        - Version control: Active
+    # Second row: Collaboration, Documentation, Training
+    row2 = st.columns(3)
+
+    with row2[0]:
+        score = agent_scores["Collaboration"]
+        st.markdown("#### 🤝 Collaboration")
+        st.progress(score / 100)
+        st.markdown(f"""
+        **Score: {score}/100** • {get_status(score)}
+        - Team coordination
+        - Authorship
+        - Version control
+        """)
+
+    with row2[1]:
+        score = agent_scores["Documentation"]
+        st.markdown("#### 📝 Documentation")
+        st.progress(score / 100)
+        st.markdown(f"""
+        **Score: {score}/100** • {get_status(score)}
+        - README & methods
+        - Data dictionary
+        - Code comments
+        """)
+
+    with row2[2]:
+        score = agent_scores["Training"]
+        st.markdown("#### 🎓 Training")
+        st.progress(score / 100)
+        st.markdown(f"""
+        **Score: {score}/100** • {get_status(score)}
+        - Core modules
+        - Skill development
+        - Best practices
         """)
 
     st.divider()

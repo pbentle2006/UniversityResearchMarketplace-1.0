@@ -281,3 +281,134 @@ def get_persona_methodology(persona: str) -> str:
         "data": "time series analysis with machine learning prediction models and ensemble methods",
     }
     return methodologies.get(persona, "general statistical analysis")
+
+
+# Demo scenarios for showcasing the platform
+DEMO_SCENARIOS = {
+    "rushed_study": {
+        "name": "The Rushed Study",
+        "persona": "social",
+        "description": "Demonstrate how agents catch p-hacking, insufficient power, and missing pre-registration",
+        "datasets": ["ds-003"],  # Social Media Sentiment
+        "agent_scores": {
+            "Analysis": 45,
+            "Integrity": 62,
+            "Testing": 38,
+            "Collaboration": 75,
+            "Documentation": 55,
+            "Training": 40,
+        },
+        "issues": [
+            "No pre-registration detected",
+            "Sample size insufficient for planned analyses",
+            "Multiple comparisons without correction",
+            "Hypotheses appear to be post-hoc (HARKing risk)",
+            "No power analysis conducted",
+        ],
+        "recommendations": [
+            "Pre-register study before data analysis",
+            "Conduct power analysis to determine adequate sample size",
+            "Apply Bonferroni or FDR correction for multiple tests",
+            "Clearly separate confirmatory from exploratory analyses",
+        ],
+    },
+    "collaborative_breakthrough": {
+        "name": "The Collaborative Breakthrough",
+        "persona": "bio",
+        "description": "Show multi-institution collaboration with proper credit attribution",
+        "datasets": ["ds-002", "ds-005"],  # Genomics + Medical Imaging
+        "agent_scores": {
+            "Analysis": 88,
+            "Integrity": 95,
+            "Testing": 82,
+            "Collaboration": 92,
+            "Documentation": 85,
+            "Training": 78,
+        },
+        "issues": [
+            "Some environment dependencies not locked",
+            "Consider additional cross-validation folds",
+        ],
+        "recommendations": [
+            "Lock all dependencies with specific versions",
+            "Add 10-fold cross-validation for robustness",
+        ],
+    },
+    "transparent_publication": {
+        "name": "The Transparent Publication",
+        "persona": "climate",
+        "description": "End-to-end workflow from pre-registration to publication with full audit trail",
+        "datasets": ["ds-001", "ds-006"],  # Climate + Ocean
+        "agent_scores": {
+            "Analysis": 92,
+            "Integrity": 98,
+            "Testing": 90,
+            "Collaboration": 85,
+            "Documentation": 95,
+            "Training": 88,
+        },
+        "issues": [],
+        "recommendations": [
+            "Consider Bayesian analysis as sensitivity check",
+            "Add interactive visualizations for data exploration",
+        ],
+    },
+    "training_journey": {
+        "name": "The Training Journey",
+        "persona": "data",
+        "description": "New researcher onboarding with personalized learning paths",
+        "datasets": ["ds-004"],  # Financial Markets
+        "agent_scores": {
+            "Analysis": 65,
+            "Integrity": 70,
+            "Testing": 55,
+            "Collaboration": 60,
+            "Documentation": 50,
+            "Training": 45,
+        },
+        "issues": [
+            "Core training modules incomplete",
+            "No data management plan",
+            "Version control not configured",
+            "Missing documentation for variables",
+        ],
+        "recommendations": [
+            "Complete Research Ethics and Statistics modules",
+            "Create data management plan using DMPTool",
+            "Initialize Git repository for code",
+            "Create data dictionary for all variables",
+        ],
+    },
+}
+
+
+def get_demo_scenario(scenario_id: str) -> dict:
+    """Get a specific demo scenario."""
+    return DEMO_SCENARIOS.get(scenario_id, {})
+
+
+def get_all_agent_scores(persona: str, selected_datasets: list = None) -> dict:
+    """
+    Get simulated agent scores based on persona and datasets.
+
+    In a real implementation, this would run actual agent analyses.
+    """
+    # Base scores by persona
+    base_scores = {
+        "climate": {"Analysis": 85, "Integrity": 90, "Testing": 82, "Collaboration": 78, "Documentation": 88, "Training": 80},
+        "bio": {"Analysis": 88, "Integrity": 92, "Testing": 85, "Collaboration": 82, "Documentation": 86, "Training": 75},
+        "social": {"Analysis": 82, "Integrity": 85, "Testing": 78, "Collaboration": 88, "Documentation": 80, "Training": 82},
+        "data": {"Analysis": 90, "Integrity": 88, "Testing": 86, "Collaboration": 80, "Documentation": 82, "Training": 78},
+    }
+
+    scores = base_scores.get(persona, base_scores["data"])
+
+    # Adjust based on number of datasets selected
+    if selected_datasets:
+        if len(selected_datasets) >= 3:
+            scores["Collaboration"] = min(100, scores["Collaboration"] + 5)
+        if len(selected_datasets) >= 2:
+            scores["Analysis"] = min(100, scores["Analysis"] + 3)
+
+    return scores
+

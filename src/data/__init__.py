@@ -6,8 +6,11 @@ from .mock_data import (
     API_STATUS,
     RESEARCH_TOOLS,
     SEARCH_SUGGESTIONS,
+    DEMO_SCENARIOS,
     get_persona_research_questions,
     get_persona_methodology,
+    get_demo_scenario,
+    get_all_agent_scores,
 )
 
 __all__ = [
@@ -18,6 +21,9 @@ __all__ = [
     "API_STATUS",
     "RESEARCH_TOOLS",
     "SEARCH_SUGGESTIONS",
+    "DEMO_SCENARIOS",
     "get_persona_research_questions",
     "get_persona_methodology",
+    "get_demo_scenario",
+    "get_all_agent_scores",
 ]
