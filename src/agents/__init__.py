@@ -12,6 +12,8 @@ from .analysis_agent import AnalysisAgent
 from .integrity_agent import IntegrityAgent
 from .testing_agent import TestingAgent
 from .collaboration_agent import CollaborationAgent
+from .documentation_agent import DocumentationAgent
+from .training_agent import TrainingAgent
 
 __all__ = [
     "BaseAgent",
@@ -24,4 +26,6 @@ __all__ = [
     "IntegrityAgent",
     "TestingAgent",
     "CollaborationAgent",
+    "DocumentationAgent",
+    "TrainingAgent",
 ]
