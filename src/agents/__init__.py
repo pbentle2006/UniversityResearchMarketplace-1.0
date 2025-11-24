@@ -10,6 +10,8 @@ from .base_agent import (
 )
 from .analysis_agent import AnalysisAgent
 from .integrity_agent import IntegrityAgent
+from .testing_agent import TestingAgent
+from .collaboration_agent import CollaborationAgent
 
 __all__ = [
     "BaseAgent",
@@ -20,4 +22,6 @@ __all__ = [
     "AgentStatus",
     "AnalysisAgent",
     "IntegrityAgent",
+    "TestingAgent",
+    "CollaborationAgent",
 ]

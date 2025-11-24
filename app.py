@@ -543,12 +543,61 @@ def render_curation():
 
 
 def render_insights():
-    """Render Step 5: AI-Powered Insights."""
+    """Render Step 5: AI-Powered Insights with visualizations."""
+    from src.utils.visualizations import create_reproducibility_scorecard, create_agent_scores_chart
+
     st.markdown("## AI-Powered Research Insights")
     st.markdown("Intelligent analysis and research suggestions")
 
     persona_id = st.session_state.user_persona
     persona = PERSONAS.get(persona_id, {})
+
+    # Reproducibility Scorecard - Main Feature
+    st.markdown("### Reproducibility Scorecard")
+
+    # Agent scores for visualization
+    agent_scores = {
+        "Analysis": 85,
+        "Integrity": 92,
+        "Testing": 78,
+        "Collaboration": 88,
+    }
+
+    # Calculate overall score
+    overall_score = sum(agent_scores.values()) / len(agent_scores)
+
+    # Display overall score prominently
+    score_cols = st.columns([1, 2, 1])
+    with score_cols[1]:
+        st.markdown(f"""
+        <div style="text-align: center; padding: 1.5rem; background: linear-gradient(135deg, #EEF2FF 0%, #E0E7FF 100%); border-radius: 1rem; margin-bottom: 1rem;">
+            <div style="font-size: 3rem; font-weight: bold; color: #4338CA;">{overall_score:.0f}</div>
+            <div style="color: #6366F1; font-weight: 500;">Overall Reproducibility Score</div>
+            <div style="font-size: 0.875rem; color: #6B7280; margin-top: 0.5rem;">Based on {len(st.session_state.selected_datasets)} selected datasets</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # Scorecard visualization
+    viz_col1, viz_col2 = st.columns(2)
+
+    with viz_col1:
+        # Radar chart for dimensions
+        dimension_scores = {
+            "Methodology": 85,
+            "Data Quality": 92,
+            "Documentation": 75,
+            "Reproducibility": 78,
+            "Transparency": 88,
+        }
+        radar_fig = create_reproducibility_scorecard(dimension_scores)
+        st.plotly_chart(radar_fig, use_container_width=True)
+
+    with viz_col2:
+        # Bar chart for agent scores
+        bar_fig = create_agent_scores_chart(agent_scores)
+        st.plotly_chart(bar_fig, use_container_width=True)
+
+    st.divider()
 
     # Research approach recommendation
     st.markdown("""
@@ -593,6 +642,52 @@ def render_insights():
 
     st.divider()
 
+    # Detailed Agent Analysis
+    st.markdown("### Detailed Agent Analysis")
+
+    # All four agents in a grid
+    agent_cols = st.columns(2)
+
+    with agent_cols[0]:
+        st.markdown("#### 🔬 Analysis Agent")
+        st.progress(85)
+        st.markdown("""
+        **Score: 85/100** • Status: Pass
+        - Statistical power: Adequate
+        - Sample size: Sufficient for medium effects
+        - Multiple comparison correction: Recommended
+        """)
+
+        st.markdown("#### 🧪 Testing Agent")
+        st.progress(78)
+        st.markdown("""
+        **Score: 78/100** • Status: Warning
+        - Experimental design: Good
+        - Environment documentation: Needs improvement
+        - Code reproducibility: Partially verified
+        """)
+
+    with agent_cols[1]:
+        st.markdown("#### 🛡️ Integrity Agent")
+        st.progress(92)
+        st.markdown("""
+        **Score: 92/100** • Status: Pass
+        - Data provenance: Verified
+        - FAIR compliance: 85%
+        - Ethics documentation: Complete
+        """)
+
+        st.markdown("#### 🤝 Collaboration Agent")
+        st.progress(88)
+        st.markdown("""
+        **Score: 88/100** • Status: Pass
+        - Team coordination: Good
+        - Authorship agreement: Present
+        - Version control: Active
+        """)
+
+    st.divider()
+
     # Similar research and collaboration
     col1, col2 = st.columns(2)
 
@@ -600,52 +695,39 @@ def render_insights():
         st.markdown("### Similar Research")
         st.markdown("""
         **Related Study #1**
-        "Longitudinal Analysis Methods in Research" - Published in Nature Methods
+        "Longitudinal Analysis Methods in Research" - Nature Methods
 
         **Related Study #2**
         "Best Practices for Reproducible Research" - Journal of Applied Statistics
+
+        **Related Study #3**
+        "Open Science Framework Usage Patterns" - PLOS ONE
         """)
 
     with col2:
         st.markdown("### Collaboration Opportunities")
         st.markdown("""
-        **Dr. Sarah Chen**
-        Working on similar datasets - Stanford University
+        **Dr. Sarah Chen** • Match: 92%
+        Stanford University - Similar datasets
 
-        **Research Group Alpha**
-        Interdisciplinary team focusing on data analysis methods
+        **Research Group Alpha** • Match: 85%
+        MIT - Data analysis methods
+
+        **Prof. Michael Torres** • Match: 78%
+        Berkeley - Complementary expertise
         """)
 
     st.divider()
 
-    # Agent analysis preview
-    st.markdown("### Research Agent Analysis")
-
-    agent_cols = st.columns(2)
-
-    with agent_cols[0]:
-        st.markdown("#### Analysis Agent")
-        st.progress(85)
-        st.markdown("""
-        **Score: 85/100**
-        - Statistical power: Adequate
-        - Sample size: Sufficient
-        - Methodology: Well-aligned with research questions
-        """)
-
-    with agent_cols[1]:
-        st.markdown("#### Integrity Agent")
-        st.progress(92)
-        st.markdown("""
-        **Score: 92/100**
-        - Data provenance: Verified
-        - Quality checks: Passed
-        - Compliance: FAIR principles met
-        """)
-
-    if st.button("Proceed to Research Tools →", type="primary", use_container_width=True):
-        st.session_state.current_step = 6
-        st.rerun()
+    # Action buttons
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("📄 Download Full Report", use_container_width=True):
+            st.info("Report generation coming in Phase 3")
+    with col2:
+        if st.button("Proceed to Research Tools →", type="primary", use_container_width=True):
+            st.session_state.current_step = 6
+            st.rerun()
 
 
 def render_tools():
